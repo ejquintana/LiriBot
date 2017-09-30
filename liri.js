@@ -34,7 +34,7 @@ function startGame() {
 				inquirer.prompt([{
 				    type: 'input',
 				    name: 'song',
-				    message: 'Please enter a song',
+				    message: 'Please enter a song & press enter to search: ',
 				  }])
 					.then((response) => {
 					const song = response.song;
@@ -49,45 +49,62 @@ function startGame() {
 			// break; 
 	 }
   })
-		}//End Switch
-	//}//my-tweets function
-		function myTweets() {
-			var screenName = {screen_name: 'changelingcat'};
-			key.twitterKeys.get('statuses/user_timeline', screenName, function(error, tweets, response) {
-			    if(!error){
-			      for(var i = 0; i<tweets.length; i++){
-			        var date = tweets[i].created_at;
-			        console.log("╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-			        console.log("  @changelingcat: " + tweets[i].text + "." + " Created On: " + date.substring(0,16) + ".");
-			        console.log("╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-			        //adds text to log.txt file
-			        // fs.appendFile('log.txt', "@changelingcat: " + tweets[i].text + " Created At: " + date.substring(0, 19));
-			        // fs.appendFile('log.txt', "-----------------------");
-			      }//End If Statement
-			      }else {
-			      		console.log('Error occurred');
-		    	  }
-		  	});//End key.get function
-		}//End myTweets function
+}//End Switch
 
-		function mySong(song){
-		// var song = "one";
-		 spotifyKey.search({ type: 'track', query: song}, function(error, data){
-		    if(!error){
-		      for(var i = 0; i < data.tracks.items.length; i++){
-		        var songInfo = data.tracks.items[i];
-		        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-		        console.log(" * Artist: " + songInfo.artists[0].name);
-		        console.log(" * Song: " + songInfo.name);
-		        console.log(" * Preview URL: " + songInfo.preview_url);
-		        //album name
-		        console.log(" * Album Name: " + songInfo.album.name);
-		        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-		      }//End For loop
+function myTweets() {
+	var screenName = {screen_name: 'changelingcat'};
+	key.twitterKeys.get('statuses/user_timeline', screenName, function(error, tweets, response) {
+	    if(!error){
+	      for(var i = 0; i<tweets.length; i++){
+	        var date = tweets[i].created_at;
+	        console.log("╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+	        console.log("  @changelingcat: " + tweets[i].text + "." + " Created On: " + date.substring(0,16) + ".");
+	        console.log("╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
+	        //adds text to log.txt file
+	        // fs.appendFile('log.txt', "@changelingcat: " + tweets[i].text + " Created At: " + date.substring(0, 19));
+	        // fs.appendFile('log.txt', "-----------------------");
+	      }//End If Statement
+	      }else {
+	      		console.log('Error occurred');
+    	  }//End Error Elose
+  	});//End Search
+}//End myTweets function
+
+function mySong(song){
+	if(!song){
+		spotifyKey.search({ type: 'track', query: 'The Sign Ace of Base', limit: 1}, function(error, data) {
+			if(!error){
+				for(var i = 0; i < data.tracks.items.length; i++){
+		        	var songInfo = data.tracks.items[i];
+		        	console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+		        	console.log(" * Default Artist: " + songInfo.artists[0].name);
+		        	console.log(" * Default Song: " + songInfo.name);
+		        	console.log(" * Default Preview URL: " + songInfo.preview_url);
+		        	console.log(" * Default Album Name: " + songInfo.album.name);
+		        	console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+				}//End For loop
 		    } //End If Statement
 		    else{
-		      console.log('Error occurred.');
+		      console.log('Error occurred.' + error);
 		    }//End Else
-		  });//End Search
-		}//End Function
+		 });//End Search
+	} else {
+		spotifyKey.search({ type: 'track', query: song}, function(error, data){
+			if(!error){
+		    	for(var i = 0; i < data.tracks.items.length; i++){
+		        var songInfo = data.tracks.items[i];
+		        	console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+		        	console.log(" * Artist: " + songInfo.artists[0].name);
+		        	console.log(" * Song: " + songInfo.name);
+		        	console.log(" * Preview URL: " + songInfo.preview_url);
+		        	console.log(" * Album Name: " + songInfo.album.name);
+		        	console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+		       	}//End For loop
+		     }//End If Statement
+		    else{
+		      console.log('Error occurred.' + error);
+		    }//End Else
+		});//End Search
+	}//END PRIMARY IF/ELSE
+}//End FUNCTION
 
