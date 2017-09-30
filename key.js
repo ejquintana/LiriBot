@@ -1,6 +1,6 @@
-console.log('this is loaded');
+console.log('Keys loaded');
 
-var Twitter = require('twitter');
+const Twitter = require('twitter');
 
 var twitterKeys = new Twitter({
   consumer_key: 'DK10crS1roPG7gzjiu7fVBcbx',
@@ -9,4 +9,13 @@ var twitterKeys = new Twitter({
   access_token_secret: 'ChHMjfv3Icjx9Fr6vFSOgF0fdclMjLYiBDzbuMHHGrZoa',
 });
 
-module.exports = twitterKeys;
+
+var spotifyKeys = {
+  id: 'ec679cc68be44d749ecdbbbcb737f61c',
+  secret: '4fb343caab6540b1bbae66bceecece0c',
+};
+
+module.exports = {
+	twitterKeys:twitterKeys,
+	spotifyKeys:spotifyKeys
+}
