@@ -8,9 +8,9 @@ const key = require('./key.js');
 
 const spotifyKey = new Spotify(key.spotifyKeys);
 
-startGame();
+startPrompts();
 
-function startGame() {
+function startPrompts() {
 	inquirer.prompt([{
 	    type: 'list',
 	    name: 'option',
@@ -18,7 +18,8 @@ function startGame() {
 	    choices: [
 			'my-tweets', 
 			'spotify-this-song', 
-			'movie-this'
+			'movie-this', 
+			'do-what-it-says'
 	    ]
 	  }]).then((responses) => {
 
@@ -50,30 +51,45 @@ function startGame() {
 					selectMovie(movie);
 					});
 					break;
-			// case "do-what-it-says": 
-			// doWhat-it-says();
-			// break; 
+			 case "do-what-it-says": 
+			 doWhat();
+			 break; 
 	 }
   })
 }//End Switch
-
+function PromptAgain() {
+	inquirer.prompt([{
+	    type: 'confirm',
+	    name: 'confirm',
+	    message: 'Would you like to keep going?',
+	  }
+	])
+	.then((answers) => {
+		if (answers.confirm) {
+			startPrompts();
+		} else {
+			console.log("Good Bye!");
+		}
+	})
+}
 function myTweets() {
 	var screenName = {screen_name: 'changelingcat'};
 	key.twitterKeys.get('statuses/user_timeline', screenName, function(error, tweets, response) {
 	    if(!error){
 	      for(var i = 0; i<tweets.length; i++){
 	        var date = tweets[i].created_at;
-	        // console.log(chalk.red("≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡"));
-	        console.log(chalk.bold.cyan(" @changelingcat: ") + chalk.bold.yellowBright(tweets[i].text) + chalk.bold.yellowBright(".") + chalk.bold.cyan(" Created On: " + date.substring(0,16) + "."));
-	        console.log(chalk.red("♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒♒"));
+	         // console.log(chalk.red("≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡"));
+	        console.log(chalk.bold.cyan(" @changelingcat: ") + chalk.bold.whiteBright(tweets[i].text) + chalk.bold.yellowBright(".") + chalk.bold.cyan(" Created On: " + date.substring(0,16) + "."));
+	        console.log(chalk.magenta("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
 	        //adds text to log.txt file
-	        // fs.appendFile('log.txt', "@changelingcat: " + tweets[i].text + " Created At: " + date.substring(0, 19));
-	        // fs.appendFile('log.txt', "-----------------------");
+	         fs.appendFileSync('log.txt', "@changelingcat: " + tweets[i].text + " Created At: " + date.substring(0, 19));
+	         fs.appendFileSync('log.txt', "-----------------------");
 	      }//End If Statement
 	      }else {
 	      		console.log('Error occurred');
     	  }//End Error Elose
   	});//End Search
+  	setTimeout(PromptAgain, 4000);
 }//End myTweets function
 
 function mySong(song){
@@ -88,6 +104,13 @@ function mySong(song){
 		        	console.log(chalk.bold.blue(" ☠  Default Preview URL: ") + chalk.white(songInfo.preview_url));
 		        	console.log(chalk.bold.cyan(" ☠  Default Album Name: ") + chalk.underline.white(songInfo.album.name));
 		        	console.log(chalk.magenta("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+					//logout
+					fs.appendFileSync('log.txt'," * Default Artist: " + songInfo.artists[0].name);
+		        	fs.appendFileSync('log.txt'," * Default Song: " + songInfo.name);
+		        	fs.appendFileSync('log.txt'," * Default Preview URL: " + songInfo.preview_url);
+		        	fs.appendFileSync('log.txt'," * Default Album Name: " + songInfo.album.name);
+		        	fs.appendFileSync('log.txt',"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
 				}//End For loop
 		    } //End If Statement
 		    else{
@@ -105,6 +128,13 @@ function mySong(song){
 		        	console.log(chalk.bold.blue(" ☠  Preview URL: ") + chalk.white(songInfo.preview_url));
 		        	console.log(chalk.bold.cyan(" ☠  Album Name: ") + chalk.underline.white(songInfo.album.name));
 		        	console.log(chalk.magenta("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+		       	
+					fs.appendFileSync('log.txt'," * Default Artist: " + songInfo.artists[0].name);
+		        	fs.appendFileSync('log.txt'," * Default Song: " + songInfo.name);
+		        	fs.appendFileSync('log.txt'," * Default Preview URL: " + songInfo.preview_url);
+		        	fs.appendFileSync('log.txt'," * Default Album Name: " + songInfo.album.name);
+		        	fs.appendFileSync('log.txt',"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
 		       	}//End For loop
 		     }//End If Statement
 		    else{
@@ -112,6 +142,7 @@ function mySong(song){
 		    }//End Else
 		});//End Search
 	}//END PRIMARY IF/ELSE
+	  	setTimeout(PromptAgain, 4000);
 }//End FUNCTION
 
 function selectMovie(movie) {
@@ -131,6 +162,17 @@ function selectMovie(movie) {
           console.log(chalk.gray("回") + chalk.underline.whiteBright("Plot: ") + chalk.cyanBright(JSON.parse(body).Plot));
           console.log(chalk.gray("回") + chalk.underline.cyanBright("Actors: ") + chalk.whiteBright(JSON.parse(body).Actors));
           console.log(chalk.blue("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+    	
+		fs.appendFileSync('log.txt'," # Move Title: " + JSON.parse(body).Title);
+		fs.appendFileSync('log.txt'," # Release Date: " + JSON.parse(body).Year);
+		fs.appendFileSync('log.txt'," # IMDB Rating: " + JSON.parse(body).imdbRating);
+		fs.appendFileSync('log.txt'," # Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+		fs.appendFileSync('log.txt'," # Production Country: " + JSON.parse(body).Country);
+		fs.appendFileSync('log.txt'," # Movie Language: " + JSON.parse(body).Language);
+		fs.appendFileSync('log.txt'," # Plot: " + JSON.parse(body).Plot);
+		fs.appendFileSync('log.txt'," # Actors: " + JSON.parse(body).Actors);
+		fs.appendFileSync('log.txt',"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
     	}else if (movie == ""){
     		var queryUrl = "http://www.omdbapi.com/?t=Mr.Nobody&y=&plot=short&apikey=40e9cece";
     // console.log(queryUrl);
@@ -147,8 +189,31 @@ function selectMovie(movie) {
           		console.log(chalk.gray("回") + chalk.underline.whiteBright("Plot: ") + chalk.cyanBright(JSON.parse(body).Plot));
           		console.log(chalk.gray("回") + chalk.underline.whiteBright("Actors: ") + chalk.whiteBright(JSON.parse(body).Actors));
           		console.log(chalk.magenta("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+    		
+   	
+				fs.appendFileSync('log.txt'," @ Move Title: " + JSON.parse(body).Title);
+				fs.appendFileSync('log.txt'," @ Release Date: " + JSON.parse(body).Year);
+				fs.appendFileSync('log.txt'," @ IMDB Rating: " + JSON.parse(body).imdbRating);
+				fs.appendFileSync('log.txt'," @ Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+				fs.appendFileSync('log.txt'," @ Production Country: " + JSON.parse(body).Country);
+				fs.appendFileSync('log.txt'," @ Movie Language: " + JSON.parse(body).Language);
+				fs.appendFileSync('log.txt'," @ Plot: " + JSON.parse(body).Plot);
+				fs.appendFileSync('log.txt'," @ Actors: " + JSON.parse(body).Actors);
+				fs.appendFileSync('log.txt',"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  
     		});
     	}
     });
+      	setTimeout(PromptAgain, 4000);
  }
+
+ function doWhat(){
+  fs.readFile('random.txt', "utf8", function(error, data){
+    var txt = data.split(',');
+    mySong(txt[1]);
+  });
+}
+
+
 
